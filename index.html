@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CEFR Checker</title>
+</head>
+<body>
+  <h1>Check CEFR</h1>
+  <input id="word" placeholder="Enter word" />
+  <button onclick="check()">Check</button>
+
+  <p id="result"></p>
+
+  <script>
+    async function check() {
+      const word = document.getElementById("word").value;
+
+      const res = await fetch(`/api/word?word=${word}`);
+      const data = await res.json();
+
+      document.getElementById("result").innerText =
+        data.cefr || "No CEFR found";
+    }
+  </script>
+</body>
+</html>
