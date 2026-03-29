@@ -6,7 +6,8 @@ export default async function handler(req, res) {
       `https://dictionary-api.cambridge.org/api/v1/entries/en/${word}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.CAMBRIDGE_API_KEY || process.env.API_KEY}`,
+          "accessKey": process.env.CAMBRIDGE_API_KEY || process.env.API_KEY,
+          "Accept": "application/json"
         },
       }
     );
