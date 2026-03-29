@@ -1,29 +1,27 @@
 export default async function handler(req, res) {
-  const { word } = req.query;
-
-  if (!word) {
-    return res.status(400).json({ error: "Missing word" });
-  }
+  const word = req.query.word;
 
   try {
     const response = await fetch(
       `https://dictionary-api.cambridge.org/api/v1/entries/en/${word}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.CAMBRIDGE_API_KEY}`,
+          Authorization: `Bearer ${process.env.CAMBRIDGE_API_KEY || process.env.API_KEY}`,
         },
       }
     );
 
-    const data = await response.json();
+    const text = await response.text();
 
-    const cefr =
-      data.entries?.[0]?.cefr_level ||
-      data.entries?.[0]?.senses?.[0]?.cefr_level ||
-      null;
+    return res.status(200).json({
+      status: response.status,
+      headers: Object.fromEntries(response.headers),
+      raw: text.slice(0, 500) // limit length
+    });
 
-    res.status(200).json({ word, cefr });
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch" });
+    return res.status(500).json({
+      error: err.message
+    });
   }
 }
